@@ -1,2 +1,2 @@
 # fetchpxw
-R-script för att hantera underlätta arbetet med pxweb
+R-script för att underlätta arbetet med pxweb
