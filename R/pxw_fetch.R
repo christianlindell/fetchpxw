@@ -10,9 +10,10 @@ library(pxweb)
 #'
 #' @param url Url till en pxwebtabell. Om tabellen tillhör SCB, Konjunkturinstitutet.
 #' Jordbruksverket eller Tillväxtanalys omvandlas url:en till tabellens webbsida
-#' till en api-url.
+#'  till en api-url.
 #' @param params_lista en lista med vilka urval som ska göras från olika parametrar.
-#' Om inget urval görs hämtas alla variabler. Om en variabel ska tas bort anges det med variabelnamn = "e", till exempel Kön = "e".
+#' Om inget urval görs hämtas alla variabler. Om en variabel ska tas bort anges det
+#'  med variabelnamn = "e", till exempel Kön = "e".
 #' @param kod_kolumn En vektor med namn på de kolumner man även vill ha koder för.
 #' @param lopnr_istallet_for_koder Vissa pxwebdatabaser är felgjorda så att man
 #' har koder som identifierare, utan löpnummer. Ange till TRUE om inte dessa identifieras
@@ -20,11 +21,11 @@ library(pxweb)
 #'
 #' @return En tibble med tabellinnehållet i vald pxweb-tabell
 #'
-#' @export
-#'
 #' @examples
 #' url = pxw_skapa_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
-#' dfscb_urval <- pxw_fetch(url, params_lista = list(Region = "12", Tid = "2022"), kod_kolumn = "region")
+#' dfscb_urval <- pxw_fetch(url, params_lista = list(Region = "12", Tid = "2022"),
+#'     kod_kolumn = "region")
+#' @export
 pxw_fetch <- function(url, params_lista = list(), kod_kolumn = NULL, lopnr_istallet_for_koder = FALSE) {
 
     # Gör om url:en om den inte är en api-url
@@ -196,13 +197,17 @@ pxw_fetch <- function(url, params_lista = list(), kod_kolumn = NULL, lopnr_istal
 
 
 # ------------ - Hämta regionkoder
-#' Om tabellen har en geografisk variabel hämtas koder för denna, till exempel kommunkoder
+#' Om tabellen har en geografisk variabel hämtas koder för denna, till exempel
+#' kommunkoder
 #'
 #' @param url URL till tabellen, antingen på webbsajt eller api-URL
-#' @param niva_nchar Om tabellen innehåller blandade geografiska nivåer så kan man ange att enbart koder med en viss längd ska hämtas. niva_nchar = 2 hämtar till exempel till exempel enbart länskoder.
+#' @param niva_nchar Om tabellen innehåller blandade geografiska nivåer så kan
+#' man ange att enbart koder med en viss längd ska hämtas. niva_nchar = 2 hämtar
+#' till exempel till exempel enbart länskoder.
 #' @param lan_kod Vektor med länskoder. Om lan_kod = c("10", "12") så hämtas koder enbart för Blekinge och Skåne.
 #'
 #' @return En vektor med kommunkoder eller dylikt
+#'
 #' @export
 #'
 #' @examples
@@ -295,7 +300,7 @@ pxw_variablellista <- function(url) {
 #'
 #' @param url
 #'
-#' @return
+#' @return En tibble med alla parametrar
 #' @export
 #'
 #' @examples
@@ -408,7 +413,7 @@ pxw_get_periods = function(url) {
 #'
 #' @param url
 #'
-#' @return
+#' @return En API-url
 #' @export
 #'
 #' @examples
@@ -480,16 +485,14 @@ pxw_skapa_api_url <- function(url) {
 
 
 
-# Gör om koder till löpnummer
-#' Gör om koder till löpnummer i de fall databasen är felkonfigurerad och använder löpnummer istället för koder, till exempel istället för kommunkoder.
+
+#' Gör om koder till löpnummer i de fall databasen är felkonfigurerad och
+#' använder löpnummer istället för koder, till exempel istället för kommunkoder.
 #'
 #' @param dfvariabellista En lista på variabler som hämtats med pwx_variabellista(url)
 #' @param params_lista En lista på de parametrar som ingår i tabellen.
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return En tibble över alla parametrar och vilka variabler dessa använder
 #'
 pxw_param_till_lopnr <- function(dfvariabellista, params_lista) {
 
