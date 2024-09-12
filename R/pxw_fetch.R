@@ -1,16 +1,10 @@
 
-library(dplyr)
-library(pxweb)
-library(purrr)
-library(stringr)
-
-
 #' Retrieve data from a pxweb database
 #'
 #' @param url_text Url to a pxweb table. If the table belongs to Statistics
 #' Sweden, the Institute of Economic Research. Jordbruksverket or Tillväxtanalys
 #'  the url will be coverted to an api url.
-#' @param params_lista A list of which selections should be made from various
+#' @param filters_list A list of which selections should be made from various
 #' parameters. If no selection is made, all variables are retrieved. If a variable
 #'  is to be removed, it is specified with variable name = "e", for example Region = "e".
 #' @param kod_kolumn A vector with names of the columns you also want codes for.
@@ -23,20 +17,20 @@ library(stringr)
 #' @export
 #'
 #' @examples
-#' url_text = pxw_skapa_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
-#' pxw_fetch(url_text = url_text, params_lista = list(Region = "12", Tid = "2022"),
+#' url_text = pxw_create_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
+#' pxw_fetch(url_text = url_text, filters_list = list(Region = "12", Tid = "2022"),
 #'     kod_kolumn = "region")
-pxw_fetch <- function(url_text = url_text, params_lista = list(), kod_kolumn = NULL, lopnr_istallet_for_koder = FALSE) {
+pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = NULL, lopnr_istallet_for_koder = FALSE) {
 
     # Gör om url:en om den inte är en api-url
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
 
     # Hänta en lista över alla parametrar och variabler i databasen
-    dfvariabellista <- pxw_variablellista(url_text)
+    dfvariabellista <- pxw_variables_list(url_text)
 
     # Byter ut kommunkoder, år m.m. till löpnummer i t.ex. Tillväxtanalys konstiga API
-    params_lista <- pxw_param_till_lopnr(url_text, dfvariabellista, params_lista)
+    filters_list <- pxw_param_till_lopnr(url_text, dfvariabellista, filters_list)
 
     # Hämta metadata om struktur och variabler
     pxvariabels <- pxweb_get(url_text)$variables
@@ -54,17 +48,17 @@ pxw_fetch <- function(url_text = url_text, params_lista = list(), kod_kolumn = N
         # Kolla om parametern definiterats av användaren.
         # Om parametern både finns i de användardefinierade parametrarna och i pxwebs
         # parameterlista är värdet TRUE
-        logical_anv_def_param <- !is.null(params_lista[[pxvariabels[[i]]$code]])
+        logical_anv_def_param <- !is.null(filters_list[[pxvariabels[[i]]$code]])
 
         # Hoppa över parametern om användaren angett att den ska elimineras
         if (logical_anv_def_param) {
-            if (params_lista[[pxvariabels[[i]]$code]][[1]] == "e") next
+            if (filters_list[[pxvariabels[[i]]$code]][[1]] == "e") next
         }
 
         # Om användaren definierat ett parametervärde, använd det. I annat fall hämta
         # alla variabler genom att sätta parametern = "*"
         if (logical_anv_def_param) {
-            pxweb_query_list[[i]] <- params_lista[[pxvariabels[[i]]$code]]
+            pxweb_query_list[[i]] <- filters_list[[pxvariabels[[i]]$code]]
         } else {
             pxweb_query_list[[i]] <- "*"
         }
@@ -81,12 +75,12 @@ pxw_fetch <- function(url_text = url_text, params_lista = list(), kod_kolumn = N
 
     # Kolla om de parametervärden som angivits finns med i variabellistan
 
-    var_namn_egna_params <- names(params_lista)
+    var_namn_egna_params <- names(filters_list)
 
     for (i in seq_along(var_namn_egna_params)) {
         parameter_namn <- var_namn_egna_params[i]
 
-        varden_egen_par <- params_lista[[parameter_namn]]
+        varden_egen_par <- filters_list[[parameter_namn]]
 
         # Kolla om eliminering är tillåten
         # if (varden_egen_par[1] == "e") {
@@ -217,17 +211,17 @@ pxw_fetch <- function(url_text = url_text, params_lista = list(), kod_kolumn = N
 #' pxw_get_region_codes(url_text, niva_nchar = 4, lan_kod = "12")
 pxw_get_region_codes = function(url_text, niva_nchar = NULL, lan_kod = NULL) {
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
     if (str_detect(url_text, "statistik.tillvaxtanalys.se|statistik.sjv.se/")) {
-        dfregionkod <- pxw_variablellista(url_text) %>%
+        dfregionkod <- pxw_variables_list(url_text) %>%
             filter(code %in% c("Kommun", "kommun", "L\u00E4n", "l\u00E4n", "Riket", "riket",
                                "Region", "region", "Land", "land", "Country", "country", "reporting country")) %>%
             separate(col = "valueText", into = c("region_kod", "region"),
                      sep = " ", extra = "merge", remove = FALSE) %>%
             select(reg_koder = region_kod)
     } else {
-        dfregionkod <- pxw_variablellista(url_text) %>%
+        dfregionkod <- pxw_variables_list(url_text) %>%
             filter(code %in% c("Kommun", "kommun", "L\u00E4n", "l\u00E4n", "Riket", "riket",
                                "Region", "region", "Land", "land", "Country", "country", "reporting country")) %>%
             select(reg_koder = values)
@@ -266,11 +260,11 @@ pxw_get_region_codes = function(url_text, niva_nchar = NULL, lan_kod = NULL) {
 #'
 #' @examples
 #' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-#' pxw_variablellista(url_text)
-pxw_variablellista <- function(url_text) {
+#' pxw_variables_list(url_text)
+pxw_variables_list <- function(url_text) {
 
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
     px_levels <- pxweb_get(url_text)
 
@@ -307,12 +301,12 @@ pxw_variablellista <- function(url_text) {
 #'
 #' @examples
 #' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-#' pxw_visa_parameterlista(url_text)
-pxw_visa_parameterlista <- function(url_text) {
+#' pxw_parameters_list(url_text)
+pxw_parameters_list <- function(url_text) {
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
-    pxw_variablellista(url_text) %>%
+    pxw_variables_list(url_text) %>%
         select(code, text, elimination) %>%
         distinct()
 }
@@ -331,7 +325,7 @@ pxw_visa_parameterlista <- function(url_text) {
 pxw_get_last_period = function(url_text) {
 
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
     return(max(pxw_get_periods(url_text = url_text)))
 }
@@ -348,7 +342,7 @@ pxw_get_last_period = function(url_text) {
 #' pxw_get_first_period(url_text)
 pxw_get_first_period = function(url_text) {
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
     return(min(pxw_get_periods(url_text = url_text)))
 }
@@ -369,7 +363,7 @@ pxw_get_first_period = function(url_text) {
 #' pxw_get_period_intervall(url_text, from_per = "2024M01", to_per = "2024M03")
 pxw_get_period_intervall = function(url_text, from_per = NULL, to_per = NULL) {
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
     periods <- pxw_get_periods(url_text = url_text)
 
@@ -395,9 +389,9 @@ pxw_get_period_intervall = function(url_text, from_per = NULL, to_per = NULL) {
 #' pxw_get_periods(url_text)
 pxw_get_periods = function(url_text) {
 
-    url_text = pxw_skapa_api_url(url_text = url_text)
+    url_text = pxw_create_api_url(url_text = url_text)
 
-    tider <- pxw_variablellista(url_text) %>%
+    tider <- pxw_variables_list(url_text) %>%
         filter(code %in% c("\u00C5r", "\u00c5r", "Ar", "ar", "Tid", "tid", "M\u00c5nad", "m\u00c5nad", "Kvartal", "kvartal", "Year", "year", "Month",  "month", "Period") | isTRUE(.data$time)) %>%
         select(valueText) %>%
         distinct() %>%
@@ -421,8 +415,8 @@ pxw_get_periods = function(url_text) {
 #'
 #' @examples
 #' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-#' pxw_skapa_api_url(url_text)
-pxw_skapa_api_url <- function(url_text) {
+#' pxw_create_api_url(url_text)
+pxw_create_api_url <- function(url_text) {
 
     if (str_detect(url_text, "statistikdatabasen.scb.se")) {
 
@@ -493,17 +487,17 @@ pxw_skapa_api_url <- function(url_text) {
 # and uses serial numbers instead of codes, for example instead of municipality
 # codes.
 
-pxw_param_till_lopnr <- function(url_text, dfvariabellista, params_lista) {
+pxw_param_till_lopnr <- function(url_text, dfvariabellista, filters_list) {
 
-    if (length(params_lista) == 0) return(params_lista)
+    if (length(filters_list) == 0) return(filters_list)
 
     if (str_detect(url_text,"tillvaxtanalys.se|statistik.sjv.se")) {
 
-        param_namn <- names(params_lista)
+        param_namn <- names(filters_list)
 
-        for (i in 1:length(params_lista)) {
+        for (i in 1:length(filters_list)) {
 
-            paramvarde <- params_lista[[i]]
+            paramvarde <- filters_list[[i]]
 
 
             if (param_namn[[i]] %in% c("Kommun", "kommun", "L\u00E4n","l\u00E4n")) {
@@ -520,11 +514,11 @@ pxw_param_till_lopnr <- function(url_text, dfvariabellista, params_lista) {
                     pull(values)
             }
 
-            params_lista[[i]] <- lopnr_motsv_parmvarde
+            filters_list[[i]] <- lopnr_motsv_parmvarde
         }
     }
 
-    return(params_lista)
+    return(filters_list)
 }
 
 

@@ -6,7 +6,7 @@
 \usage{
 pxw_fetch(
   url_text = url_text,
-  params_lista = list(),
+  filters_list = list(),
   kod_kolumn = NULL,
   lopnr_istallet_for_koder = FALSE
 )
@@ -16,7 +16,7 @@ pxw_fetch(
 Sweden, the Institute of Economic Research. Jordbruksverket or Tillväxtanalys
 the url will be coverted to an api url.}
 
-\item{params_lista}{A list of which selections should be made from various
+\item{filters_list}{A list of which selections should be made from various
 parameters. If no selection is made, all variables are retrieved. If a variable
 is to be removed, it is specified with variable name = "e", for example Region = "e".}
 
@@ -33,7 +33,7 @@ A tibble with the contents of the pxweb table
 Retrieve data from a pxweb database
 }
 \examples{
-url_text = pxw_skapa_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
-pxw_fetch(url_text = url_text, params_lista = list(Region = "12", Tid = "2022"),
+url_text = pxw_create_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
+pxw_fetch(url_text = url_text, filters_list = list(Region = "12", Tid = "2022"),
     kod_kolumn = "region")
 }
