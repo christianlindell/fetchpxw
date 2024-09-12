@@ -4,7 +4,7 @@ Version: 0.0.0.9001
 Authors@R: 
     person("Christian", "Lindell", , "christian_lindell@yahoo.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Funktioner för att anropa pxweb.
+Description: Function to call pxweb servers.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -14,7 +14,9 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     dplyr,
+    graphics,
     magrittr,
     purrr,
     pxweb,
-    stringr
+    stringr,
+    utils
