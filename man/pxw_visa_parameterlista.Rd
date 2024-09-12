@@ -2,20 +2,20 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_visa_parameterlista}
 \alias{pxw_visa_parameterlista}
-\title{Visa tabellens alla parametrare och queryns struktur}
+\title{Get a tibble with all parameters in the table}
 \usage{
-pxw_visa_parameterlista(url)
+pxw_visa_parameterlista(url_text)
 }
 \arguments{
-\item{url}{}
+\item{url_text}{URL to the tables web site or API.}
 }
 \value{
-En tibble med alla parametrar
+A tibble with all parameters
 }
 \description{
-Visa tabellens alla parametrare och queryns struktur
+Get a tibble with all parameters in the table
 }
 \examples{
-url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_visa_parameterlista(url)
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_visa_parameterlista(url_text)
 }

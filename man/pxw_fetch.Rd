@@ -2,38 +2,38 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_fetch}
 \alias{pxw_fetch}
-\title{Hämta data från en pxweb-databas}
+\title{Retrieve data from a pxweb database}
 \usage{
 pxw_fetch(
-  url,
+  url_text = url_text,
   params_lista = list(),
   kod_kolumn = NULL,
   lopnr_istallet_for_koder = FALSE
 )
 }
 \arguments{
-\item{url}{Url till en pxwebtabell. Om tabellen tillhör SCB, Konjunkturinstitutet.
-Jordbruksverket eller Tillväxtanalys omvandlas url:en till tabellens webbsida
-till en api-url.}
+\item{url_text}{Url to a pxweb table. If the table belongs to Statistics
+Sweden, the Institute of Economic Research. Jordbruksverket or Tillväxtanalys
+the url will be coverted to an api url.}
 
-\item{params_lista}{en lista med vilka urval som ska göras från olika parametrar.
-Om inget urval görs hämtas alla variabler. Om en variabel ska tas bort anges det
-med variabelnamn = "e", till exempel Kön = "e".}
+\item{params_lista}{A list of which selections should be made from various
+parameters. If no selection is made, all variables are retrieved. If a variable
+is to be removed, it is specified with variable name = "e", for example Region = "e".}
 
-\item{kod_kolumn}{En vektor med namn på de kolumner man även vill ha koder för.}
+\item{kod_kolumn}{A vector with names of the columns you also want codes for.}
 
-\item{lopnr_istallet_for_koder}{Vissa pxwebdatabaser är felgjorda så att man
-har koder som identifierare, utan löpnummer. Ange till TRUE om inte dessa identifieras
-korrekt}
+\item{lopnr_istallet_for_koder}{Some pxweb databases are misconfigured so that
+they don't have codes as identifiers, but insted uses serial numbers.
+Set to TRUE if these are not identified correctly}
 }
 \value{
-En tibble med tabellinnehållet i vald pxweb-tabell
+A tibble with the contents of the pxweb table
 }
 \description{
-Hämta data från en pxweb-databas
+Retrieve data from a pxweb database
 }
 \examples{
-url = pxw_skapa_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
-dfscb_urval <- pxw_fetch(url, params_lista = list(Region = "12", Tid = "2022"),
+url_text = pxw_skapa_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
+pxw_fetch(url_text = url_text, params_lista = list(Region = "12", Tid = "2022"),
     kod_kolumn = "region")
 }

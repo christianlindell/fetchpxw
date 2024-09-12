@@ -2,20 +2,21 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_periods}
 \alias{pxw_get_periods}
-\title{Hämta alla tillgängliga perioder}
+\title{Get all available periods}
 \usage{
-pxw_get_periods(url)
+pxw_get_periods(url_text)
 }
 \arguments{
-\item{url}{URL till tabellen webbsida eller API.}
+\item{url_text}{URL to the tables web site or API.}
 }
 \value{
-En vektor med alla tider som finns i databasen, till exempel alla år det finns data för
+A vector of all times available in the database, for example all
+years for which there is data
 }
 \description{
-Hämta alla tillgängliga perioder
+Get all available periods
 }
 \examples{
-url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_get_periods(url, from_per = NULL, to_per = NULL)
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_get_periods(url_text)
 }

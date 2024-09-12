@@ -2,20 +2,20 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_variablellista}
 \alias{pxw_variablellista}
-\title{Skapa en lista över tabellens alla parametrar och deras variabler}
+\title{Get a tibble with all parameters and variables in the table}
 \usage{
-pxw_variablellista(url)
+pxw_variablellista(url_text)
 }
 \arguments{
-\item{url}{URL till tabellens webbsida eller API.}
+\item{url_text}{URL to the tables web site or API.}
 }
 \value{
-En tibble med alla parametrar och variabler som kan användas.
+A tibble with all parameters and variables that can be used in the query
 }
 \description{
-Skapa en lista över tabellens alla parametrar och deras variabler
+Get a tibble with all parameters and variables in the table
 }
 \examples{
-url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_variablellista(url)
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_variablellista(url_text)
 }

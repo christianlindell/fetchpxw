@@ -2,20 +2,20 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_first_period}
 \alias{pxw_get_first_period}
-\title{Hämta första tidpunkt i tabellen (år, månad etc)}
+\title{Get the first time in the table (year, month, etc.)}
 \usage{
-pxw_get_first_period(url)
+pxw_get_first_period(url_text)
 }
 \arguments{
-\item{url}{URL till tabellen webbsida eller API.}
+\item{url_text}{URL to the tables web site or API.}
 }
 \value{
-En textsträng med den tidigaste tidpunkten som finns i tabellen
+A text string with the earliest time found in the table
 }
 \description{
-Hämta första tidpunkt i tabellen (år, månad etc)
+Get the first time in the table (year, month, etc.)
 }
 \examples{
-url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_get_first_period(url)
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_get_first_period(url_text)
 }

@@ -2,24 +2,24 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_period_intervall}
 \alias{pxw_get_period_intervall}
-\title{Skapa ett periodintervall för de tidpunkter som finns i tabelan}
+\title{Create a period range for the times in the table}
 \usage{
-pxw_get_period_intervall(url, from_per = "2020M06", to_per = "2024M01")
+pxw_get_period_intervall(url_text, from_per = NULL, to_per = NULL)
 }
 \arguments{
-\item{url}{URL till tabellen webbsida eller API.}
+\item{url_text}{URL to the tables web site or API.}
 
-\item{from_per}{Ange den tidigaste tidpunkten i intervallet}
+\item{from_per}{Enter the earliest time in the range}
 
-\item{to_per}{Ange senaste tidpunkten i intervallet.}
+\item{to_per}{Enter the latest time in the range.}
 }
 \value{
-En vektor med alla de tider som finns mellan from_per och to_per.
+A vector with all the times between from_per and to_per.
 }
 \description{
-Skapa ett periodintervall för de tidpunkter som finns i tabelan
+Create a period range for the times in the table
 }
 \examples{
-url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_get_period_intervall(url, from_per = NULL, to_per = NULL)
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_get_period_intervall(url_text, from_per = "2024M01", to_per = "2024M03")
 }

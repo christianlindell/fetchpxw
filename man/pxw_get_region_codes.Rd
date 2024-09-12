@@ -2,28 +2,29 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_region_codes}
 \alias{pxw_get_region_codes}
-\title{Om tabellen har en geografisk variabel hämtas koder för denna, till exempel
-kommunkoder}
+\title{If the table has a geographical variable, codes for this are retrieved, for
+example municipality codes}
 \usage{
-pxw_get_region_codes(url, niva_nchar = NULL, lan_kod = NULL)
+pxw_get_region_codes(url_text, niva_nchar = NULL, lan_kod = NULL)
 }
 \arguments{
-\item{url}{URL till tabellen, antingen på webbsajt eller api-URL}
+\item{url_text}{UURL to the tables web site or API.}
 
-\item{niva_nchar}{Om tabellen innehåller blandade geografiska nivåer så kan
-man ange att enbart koder med en viss längd ska hämtas. niva_nchar = 2 hämtar
-till exempel till exempel enbart länskoder.}
+\item{niva_nchar}{If the table contains mixed geographic levels, it can
+specify that only codes with a certain length should be retrieved.
+level_nchar = 2 fetches for example county codes only.}
 
-\item{lan_kod}{Vektor med länskoder. Om lan_kod = c("10", "12") så hämtas koder enbart för Blekinge och Skåne.}
+\item{lan_kod}{Vector of county codes. If lan_kod = c("10", "12") then
+codes are retrieved only for Blekinge and Skåne.}
 }
 \value{
-En vektor med kommunkoder eller dylikt
+A vector with municipality codes or similar
 }
 \description{
-Om tabellen har en geografisk variabel hämtas koder för denna, till exempel
-kommunkoder
+If the table has a geographical variable, codes for this are retrieved, for
+example municipality codes
 }
 \examples{
-url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_get_region_codes(url, niva_nchar = 4, lan_kod = "12")
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_get_region_codes(url_text, niva_nchar = 4, lan_kod = "12")
 }

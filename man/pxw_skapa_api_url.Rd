@@ -2,20 +2,20 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_skapa_api_url}
 \alias{pxw_skapa_api_url}
-\title{Gör om en länk till databastabellens hemsida till en api-url}
+\title{Convert a link to a database tables home page to an api url}
 \usage{
-pxw_skapa_api_url(url)
+pxw_skapa_api_url(url_text)
 }
 \arguments{
-\item{url}{}
+\item{url_text}{An URL to a tables as a character string.}
 }
 \value{
-En API-url
+A URL to a API
 }
 \description{
-Gör om en länk till databastabellens hemsida till en api-url
+Convert a link to a database tables home page to an api url
 }
 \examples{
-#' url <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
-pxw_skapa_api_url(url)
+url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+pxw_skapa_api_url(url_text)
 }
