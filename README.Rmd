@@ -26,5 +26,5 @@ You can install the development version of fetchpxw from [GitHub](https://github
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("christianlindell/fetchpxw")
+devtools::install_github("christianlindell/fetchpxw", build_vignettes = TRUE)
 ```
