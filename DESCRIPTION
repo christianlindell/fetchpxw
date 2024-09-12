@@ -1,6 +1,6 @@
 Package: fetchpxw
-Title: Hämta data från pxweb-databaser
-Version: 0.0.0.9000
+Title: Get data from pxweb databases
+Version: 0.0.0.9001
 Authors@R: 
     person("Christian", "Lindell", , "christian_lindell@yahoo.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -17,6 +17,4 @@ Imports:
     magrittr,
     purrr,
     pxweb,
-    stats,
-    stringr,
-    utils
+    stringr
