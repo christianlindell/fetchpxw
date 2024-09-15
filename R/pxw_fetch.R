@@ -93,7 +93,7 @@ pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = N
         ska_elimineras <- varden_egen_par[1] == "e"
 
         if (!isTRUE(eliminering_tillaten) & isTRUE(ska_elimineras))  {
-            error_mess <- paste0("Fel! Parametern ", parameter_namn, " f\u00c5r inte elimineras")
+            error_mess <- paste0("Fel! Parametern ", parameter_namn, " f\u00E5r inte elimineras")
             stop(error_mess)
         }
 
@@ -240,7 +240,7 @@ pxw_get_region_codes = function(url_text, niva_nchar = NULL, lan_kod = NULL) {
         if (!is.null(lan_kod)) region_kod <- region_kod[substr(region_kod, 1, 2) %in% lan_kod]
 
         if (is.null(region_kod) | purrr::is_empty(region_kod) | length(region_kod) == 0) {
-            stop("Inga regionkoder kunde hittas. Finns inte angiven niv\u00c5?")
+            stop("Inga regionkoder kunde hittas. Finns inte angiven niv\u00E5?")
         }
 
         return(region_kod)
@@ -392,7 +392,7 @@ pxw_get_periods = function(url_text) {
     url_text = pxw_create_api_url(url_text = url_text)
 
     tider <- pxw_variables_list(url_text) %>%
-        filter(code %in% c("\u00C5r", "\u00c5r", "Ar", "ar", "Tid", "tid", "M\u00c5nad", "m\u00c5nad", "Kvartal", "kvartal", "Year", "year", "Month",  "month", "Period") | isTRUE(.data$time)) %>%
+        filter(code %in% c("\u00C5r", "\u00E5r", "Ar", "ar", "Tid", "tid", "M\u00E5nad", "m\u00E5nad", "Manad", "manad","Kvartal", "kvartal", "Year", "year", "Month",  "month", "Period") | isTRUE(.data$time)) %>%
         select(valueText) %>%
         distinct() %>%
         arrange(valueText) %>%
@@ -464,15 +464,26 @@ pxw_create_api_url <- function(url_text) {
 
     if (str_detect(url_text, "konj.se/PxWeb/pxweb")) {
 
-        txt_amnetab <- str_remove(url_text, "https://statistik.konj.se/PxWeb/pxweb/sv/") %>%
-            str_replace_all("__", "/")
+        if (str_detect(url_text, "prognos")) {
+            txt_amnetab <- str_remove(url_text, "https://prognos.konj.se/PxWeb/pxweb/sv/.*?/") %>%
+                str_replace_all("__", "/")
+        } else if (str_detect(url_text, "statistik")) {
+            txt_amnetab <- str_remove(url_text, "https://statistik.konj.se/PxWeb/pxweb/sv/.*?/") %>%
+                str_replace_all("__", "/")
+        }
 
-        start_api <- "https://statistik.konj.se:443/PxWeb/api/v1/sv/"
 
+        if (str_detect(url_text, "prognos")) {
+            start_api <- "https://prognos.konj.se:443/PxWeb/api/v1/sv/"
+        } else if (str_detect(url_text, "statistik")) {
+            start_api <- "https://statistik.konj.se:443/PxWeb/api/v1/sv/"
+        }
         url_text <- paste0(start_api, txt_amnetab)
 
         url_text <- str_remove(url_text, "/$")
     }
+
+
 
     return(url_text)
 
