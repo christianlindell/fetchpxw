@@ -8,11 +8,11 @@ test_that("pxw_skapa_api_url() SCB fungerar", {
 })
 
 
-# test_that("pxw_skapa_api_url() Tillvaxtanalys fungerar", {
-#         expect_equal(pxw_create_api_url("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/Tillv%C3%A4xtanalys%20statistikdatabas/Tillv%C3%A4xtanalys%20statistikdatabas__Konkurser%20och%20offentliga%20ackord/konk_ack_ar_1996.px/"),
-#                      "")
-#
-#     })
+test_that("pxw_skapa_api_url() Tillvaxtanalys fungerar", {
+        expect_equal(pxw_create_api_url("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/Tillv%C3%A4xtanalys%20statistikdatabas/Tillv%C3%A4xtanalys%20statistikdatabas__Konkurser%20och%20offentliga%20ackord/konk_ack_ar_1996.px/"),
+                     "https://statistik.tillvaxtanalys.se:443/PxWeb/api/v1/sv/Tillväxtanalys statistikdatabas/Konkurser och offentliga ackord/konk_ack_ar_1996.px")
+
+    })
 
 test_that("pxw_skapa_api_url() FoHM fungerar", {
         expect_equal(pxw_create_api_url("http://fohm-app.folkhalsomyndigheten.se/Folkhalsodata/pxweb/sv/A_Folkhalsodata/A_Folkhalsodata__Z_ovrigdata__Arbete/Arbetsloshet_LanUTBNIVA.px/"),
@@ -38,3 +38,6 @@ test_that("pxw_skapa_api_url() Konjinst prognosdatabas fungerar", {
 
 })
 
+test_that("pxw_get_region_codes() TVA levererar rätt antal regioner", {
+    expect_equal(length(pxw_get_region_codes("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/Tillv%C3%A4xtanalys%20statistikdatabas/Tillv%C3%A4xtanalys%20statistikdatabas__Konkurser%20och%20offentliga%20ackord/konk_ar_lan_bransch_2009.px/")), 21)
+})
