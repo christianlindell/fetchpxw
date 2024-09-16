@@ -16,7 +16,9 @@ A tibble with all parameters and variables that can be used in the query
 Get a tibble with all parameters and variables in the table
 }
 \examples{
-url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-"START__AM__AM0210__AM0210A/ArbStatusM/")
+url_text <- paste0(
+  "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+  "START__AM__AM0210__AM0210A/ArbStatusM/"
+)
 pxw_variables_list(url_text)
 }

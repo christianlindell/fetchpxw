@@ -17,7 +17,9 @@ years for which there is data
 Get all available periods
 }
 \examples{
-url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-"START__AM__AM0210__AM0210A/ArbStatusM/")
+url_text <- paste0(
+  "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+  "START__AM__AM0210__AM0210A/ArbStatusM/"
+)
 pxw_get_periods(url_text)
 }

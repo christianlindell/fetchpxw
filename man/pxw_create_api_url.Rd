@@ -16,7 +16,9 @@ A URL to a API
 Convert a link to a database tables home page to an api url
 }
 \examples{
-url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-"START__AM__AM0210__AM0210A/ArbStatusM/")
+url_text <- paste0(
+  "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+  "START__AM__AM0210__AM0210A/ArbStatusM/"
+)
 pxw_create_api_url(url_text)
 }

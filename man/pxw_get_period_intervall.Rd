@@ -20,7 +20,9 @@ A vector with all the times between from_per and to_per.
 Create a period range for the times in the table
 }
 \examples{
-url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-"START__AM__AM0210__AM0210A/ArbStatusM/")
+url_text <- paste0(
+  "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+  "START__AM__AM0210__AM0210A/ArbStatusM/"
+)
 pxw_get_period_intervall(url_text, from_per = "2024M01", to_per = "2024M03")
 }
