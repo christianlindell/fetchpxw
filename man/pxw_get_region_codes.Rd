@@ -25,6 +25,7 @@ If the table has a geographical variable, codes for this are retrieved, for
 example municipality codes
 }
 \examples{
-url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+"START__AM__AM0210__AM0210A/ArbStatusM/")
 pxw_get_region_codes(url_text, niva_nchar = 4, lan_kod = "12")
 }

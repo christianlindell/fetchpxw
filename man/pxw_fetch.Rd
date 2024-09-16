@@ -33,7 +33,8 @@ A tibble with the contents of the pxweb table
 Retrieve data from a pxweb database
 }
 \examples{
-url_text = pxw_create_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
+url_text = pxw_create_api_url(paste0("https://www.statistikdatabasen.scb.se/",
+"pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/"))
 pxw_fetch(url_text = url_text, filters_list = list(Region = "12", Tid = "2022"),
     kod_kolumn = "region")
 }
