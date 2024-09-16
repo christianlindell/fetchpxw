@@ -17,7 +17,8 @@
 #' @export
 #'
 #' @examples
-#' url_text = pxw_create_api_url("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/")
+#' url_text = pxw_create_api_url(paste0("https://www.statistikdatabasen.scb.se/",
+#' "pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/"))
 #' pxw_fetch(url_text = url_text, filters_list = list(Region = "12", Tid = "2022"),
 #'     kod_kolumn = "region")
 pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = NULL, lopnr_istallet_for_koder = FALSE) {
@@ -207,7 +208,8 @@ pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = N
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_get_region_codes(url_text, niva_nchar = 4, lan_kod = "12")
 pxw_get_region_codes = function(url_text, niva_nchar = NULL, lan_kod = NULL) {
 
@@ -259,7 +261,8 @@ pxw_get_region_codes = function(url_text, niva_nchar = NULL, lan_kod = NULL) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_variables_list(url_text)
 pxw_variables_list <- function(url_text) {
 
@@ -300,7 +303,8 @@ pxw_variables_list <- function(url_text) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_parameters_list(url_text)
 pxw_parameters_list <- function(url_text) {
 
@@ -320,7 +324,8 @@ pxw_parameters_list <- function(url_text) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_get_last_period(url_text)
 pxw_get_last_period = function(url_text) {
 
@@ -338,7 +343,8 @@ pxw_get_last_period = function(url_text) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_get_first_period(url_text)
 pxw_get_first_period = function(url_text) {
 
@@ -359,7 +365,8 @@ pxw_get_first_period = function(url_text) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_get_period_intervall(url_text, from_per = "2024M01", to_per = "2024M03")
 pxw_get_period_intervall = function(url_text, from_per = NULL, to_per = NULL) {
 
@@ -385,7 +392,8 @@ pxw_get_period_intervall = function(url_text, from_per = NULL, to_per = NULL) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_get_periods(url_text)
 pxw_get_periods = function(url_text) {
 
@@ -414,7 +422,8 @@ pxw_get_periods = function(url_text) {
 #' @export
 #'
 #' @examples
-#' url_text <- "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__AM__AM0210__AM0210A/ArbStatusM/"
+#' url_text <- paste0("https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
+#' "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_create_api_url(url_text)
 pxw_create_api_url <- function(url_text) {
 
@@ -434,6 +443,8 @@ pxw_create_api_url <- function(url_text) {
     if (str_detect(url_text, "statistik.tillvaxtanalys.se/")) {
         url_text <- str_replace(URLdecode(url_text), "https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/Tillv\u00E4xtanalys statistikdatabas/Tillv\u00E4xtanalys", "https://statistik.tillvaxtanalys.se:443/PxWeb/api/v1/sv/Tillv\u00E4xtanalys") %>%
             str_replace_all(pattern = "__", replacement = "/")
+
+        url_text <- str_remove(url_text, "/$")
     }
 
     if (str_detect(url_text, "statistik.sjv.se/PXWeb/pxweb/")) {
