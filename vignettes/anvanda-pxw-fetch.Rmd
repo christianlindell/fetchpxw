@@ -45,8 +45,10 @@ fetchpxw gör om URL:en till tabellsidan till en API-URL och hämtar hem samtlig
 Man kan därför välja att använda filter, vilka anges i parametern `filters_list` .
 
 ```{r}
-df <- fetchpxw::pxw_fetch(url_text = url_text,
-                          filters_list = list(Alder = "20-64", Region = "1280"))
+df <- fetchpxw::pxw_fetch(
+  url_text = url_text,
+  filters_list = list(Alder = "20-64", Region = "1280")
+)
 ```
 
 Nu har vi filtrerat ut de som är i åldern 20-64 år och bor i Malmö, vilket blir en behändig dataframe på 36 rader.
