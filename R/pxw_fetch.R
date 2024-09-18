@@ -25,160 +25,142 @@
 #'   kod_kolumn = "region"
 #' )
 pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = NULL, lopnr_istallet_for_koder = FALSE) {
-  # Gör om url:en om den inte är en api-url
-  url_text <- pxw_create_api_url(url_text = url_text)
+    # Gör om url:en om den inte är en api-url
+
+    url_text <- pxw_create_api_url(url_text = url_text)
 
 
-  # Hänta en lista över alla parametrar och variabler i databasen
-  dfvariabellista <- pxw_variables_list(url_text)
+    # Hämta en lista över alla parametrar och variabler i databasen
+    dfvariabellista <- pxw_variables_list_mod(url_text)
 
-  # Byter ut kommunkoder, år m.m. till löpnummer i t.ex. Tillväxtanalys konstiga API
-  filters_list <- pxw_param_till_lopnr(url_text, dfvariabellista, filters_list)
+    # Hämta metadata om tabellens struktur och variabler från dataleverantören
+    pxvariabels <- pxweb_get(url_text)$variables
 
-  # Hämta metadata om struktur och variabler
-  pxvariabels <- pxweb_get(url_text)$variables
+    # Skapa en tom lista för att bygga frågan till pxweb
+    pxweb_query_list <- list()
 
-  # Skapa en tom lista för att bygga frågan till pxweb
-  pxweb_query_list <- list()
+    # Ta reda på hur många parametrar databasen har
+    n_params <- length(pxvariabels)
 
-  # Ta reda på hur många parametrar databasen har
-  n_params <- length(pxvariabels)
+    # Loopa igenom parameterlistan och bygg frågan till pxweb en parameter i taget
+    for (i in 1:n_params) {
+
+        # Kolla om parametern definiterats av användaren.
+        # Om parametern både finns i de användardefinierade parametrarna och i pxwebs
+        # parameterlista är värdet TRUE
+        logical_anv_def_param <- !is.null(filters_list[[pxvariabels[[i]]$code]])
 
 
-  # Loopa igenom parameterlistan och bygg frågan till pxweb en parameter i taget
-  for (i in 1:n_params) {
-    # Kolla om parametern definiterats av användaren.
-    # Om parametern både finns i de användardefinierade parametrarna och i pxwebs
-    # parameterlista är värdet TRUE
-    logical_anv_def_param <- !is.null(filters_list[[pxvariabels[[i]]$code]])
+        # Skapa en tibble med de alla variabler som hör till just den aktuella parametern
+        param_variabler <- dfvariabellista %>% filter(code == pxvariabels[[i]]$code)
 
-    # Hoppa över parametern om användaren angett att den ska elimineras
-    if (logical_anv_def_param) {
-      if (filters_list[[pxvariabels[[i]]$code]][[1]] == "e") next
+        mojliga_variabelvarden <- param_variabler %>% pull(values)
+
+        if (logical_anv_def_param) {
+            valda_variabelvarden <- filters_list[[pxvariabels[[i]]$code]]
+
+            # koder i values om databsen är rätt konfigurerad, annars löpnummer
+            orginal_values <- param_variabler %>%
+                filter(values %in% valda_variabelvarden) %>%
+                pull(values_org)
+        }
+
+
+        # Hoppa över parametern om användaren angett att den ska elimineras
+        if (logical_anv_def_param) {
+
+            # Kolla om variabeln får elemineras
+            ska_elimineras <- filters_list[[pxvariabels[[i]]$code]] == "e"
+
+            eliminering_tillaten <- param_variabler$elimination[1]
+
+            if (!isTRUE(eliminering_tillaten) & isTRUE(ska_elimineras)) {
+                error_mess <- paste0("Fel! Parametern ", parameter_namn, " f\u00E5r inte elimineras")
+                stop(error_mess)
+            }
+
+            if (filters_list[[pxvariabels[[i]]$code]][[1]] == "e") next
+        }
+
+        # Om användaren definierat ett parametervärde, använd det. I annat fall hämta
+        # alla variabler genom att sätta parametern = "*"
+        if (logical_anv_def_param) {
+
+            felaktiga_variabelvarden <- setdiff(valda_variabelvarden, mojliga_variabelvarden)
+
+            if (!is_empty(felaktiga_variabelvarden)) {
+                if (!isTRUE(ska_elimineras)) {
+                    error_msg <- paste0("Fel!  Felaktiga variabelv\u00E4rden angivna i parametern ", parameter_namn, ". \n", "Variablerna ", paste(felaktiga_variabelvarden, collapse = " "), " finns inte!")
+                    stop(error_msg)
+                }
+            }
+
+            pxweb_query_list[[i]] <- orginal_values
+
+        } else {
+            pxweb_query_list[[i]] <- "*"
+        }
+
+        # Namnge elementen i listan till pxweb
+        names(pxweb_query_list)[[i]] <- pxvariabels[[i]]$code
     }
 
-    # Om användaren definierat ett parametervärde, använd det. I annat fall hämta
-    # alla variabler genom att sätta parametern = "*"
-    if (logical_anv_def_param) {
-      pxweb_query_list[[i]] <- filters_list[[pxvariabels[[i]]$code]]
-    } else {
-      pxweb_query_list[[i]] <- "*"
-    }
-
-    # Namnge elementen i listan till pxweb
-    names(pxweb_query_list)[[i]] <- pxvariabels[[i]]$code
-  }
-
-  # Ta bort tomma element ur listan (variabler som ska elimineras)
-  pxweb_query_list <- Filter(Negate(is.null), pxweb_query_list)
+    # Ta bort tomma element ur listan (variabler som ska elimineras)
+    pxweb_query_list <- Filter(Negate(is.null), pxweb_query_list)
 
 
-  # FELKONTROLL
-
-  # Kolla om de parametervärden som angivits finns med i variabellistan
-
-  var_namn_egna_params <- names(filters_list)
-
-  for (i in seq_along(var_namn_egna_params)) {
-    parameter_namn <- var_namn_egna_params[i]
-
-    varden_egen_par <- filters_list[[parameter_namn]]
-
-    # Kolla om eliminering är tillåten
-    # if (varden_egen_par[1] == "e") {
-    dfvars_px <- dfvariabellista %>%
-      filter(code == parameter_namn)
-
-    eliminering_tillaten <- head(dfvars_px, 1) %>%
-      pull(elimination)
-
-    ska_elimineras <- varden_egen_par[1] == "e"
-
-    if (!isTRUE(eliminering_tillaten) & isTRUE(ska_elimineras)) {
-      error_mess <- paste0("Fel! Parametern ", parameter_namn, " f\u00E5r inte elimineras")
-      stop(error_mess)
-    }
-
-    # Kolla om den av användaren angivna parametern finns och om värdena stämmer
-
-    varden_param <- dfvariabellista %>%
-      filter(code == parameter_namn) %>%
-      pull(values)
-
-    if ((length(varden_param) == 0)) {
-      error_msg <- paste0("Fel! Parametern ", parameter_namn, " finns inte!")
-      stop(error_msg)
-    }
-
-    felaktiga_variabelvarden <- setdiff(varden_egen_par, varden_param)
-
-    if (!is_empty(felaktiga_variabelvarden)) {
-      if (!isTRUE(ska_elimineras)) {
-        error_msg <- paste0("Fel!  Felaktiga variabelv\u00E4rden angivna i parametern ", parameter_namn, ". \n", "Variablerna ", paste(felaktiga_variabelvarden, collapse = " "), " finns inte!")
-        stop(error_msg)
-      }
-    }
-  }
-
-  # Hämta data
-  px_data <-
-    pxweb_get(
-      url = url_text,
-      query = pxweb_query_list
-    )
+    # Hämta data
+    px_data <-
+        pxweb_get(
+            url = url_text,
+            query = pxweb_query_list
+        )
 
 
 
-  # Convert to data.frame
-  px_data_frame <- as.data.frame(px_data, column.name.type = "text", variable.value.type = "text") %>%
-    tibble()
+    # Convert to data.frame
+    px_data_frame <- as.data.frame(px_data, column.name.type = "text", variable.value.type = "text") %>%
+        tibble()
 
-  # Om databasen är korrekt formatterad med koder i values och inte sammanblandning
-  # av namn och koder ska den här koden användas för att lägga till kolumner med koder
+    # Lägg på koder om servern är korrekt konfigurerad och inte använder
+    # löpnummer istället för koder
 
-  # Lägg på koder för de kolumner som finns angivna i parametern kod_kolumn
+    if (isFALSE(dfvariabellista$is_lopnr[1])) {
 
-  if (!is.null(kod_kolumn)) {
-    dfcodes <- as.data.frame(px_data, column.name.type = "text", variable.value.type = "code") %>%
-      select(any_of(kod_kolumn)) %>%
-      tibble()
+        if (!is.null(kod_kolumn)) {
+            dfcodes <- as.data.frame(px_data, column.name.type = "text", variable.value.type = "code") %>%
+                select(any_of(kod_kolumn)) %>%
+                tibble()
 
-    if (ncol(dfcodes) > 0) {
-      names_df_codes <- names(dfcodes)
-      names(dfcodes) <- paste0(names_df_codes, "_kod")
+            if (ncol(dfcodes) > 0) {
+                names_df_codes <- names(dfcodes)
+                names(dfcodes) <- paste0(names_df_codes, "_kod")
 
-      px_data_frame <- bind_cols(dfcodes, px_data_frame)
+                px_data_frame <- bind_cols(dfcodes, px_data_frame)
+            }
+        }
+        return(px_data_frame)
     }
 
 
-    # Hantera siter som inte följer korrekt formatering och har löpnr i values
-    # istället för koder
+    # Om tabellen har löpnr iställer för koder i values (felkonfigurerad)
+    for (i in seq_along(kod_kolumn)) {
+        dfkodnyckel <- dfvariabellista %>% filter(text %in% kod_kolumn) %>%
+            select(valueText_org, values, valueText)
 
-    if (str_detect(url_text, "sjv|tillvaxtanalys") | lopnr_istallet_for_koder) {
-      for (index in seq_along(kod_kolumn)) {
-        df <- dfvariabellista %>%
-          filter(text == kod_kolumn[index]) %>%
-          select(-values) %>%
-          mutate(values = valueText) %>%
-          mutate(values = if_else(str_detect(values, "\\b(?=\\w*\\d)\\w+\\b\\s"),
-            str_extract(values, "\\b(?=\\w*\\d)\\w+\\b\\s"), values
-          )) %>%
-          mutate(values = str_trim(values)) %>%
-          select(values, valueText)
+        names(dfkodnyckel)[1] <- "valueText_org"
+        names(dfkodnyckel)[3] <- kod_kolumn[i]
+        names(dfkodnyckel)[2] <- paste0(kod_kolumn[i], "_kod")
 
-        names(df)[1] <- paste0(kod_kolumn[index], "_kod")
-        names(df)[2] <- kod_kolumn[index]
+        index_param <- which(str_detect(kod_kolumn[i], names(px_data_frame)))
+        names(px_data_frame)[index_param] <- "valueText_org"
 
-        px_data_frame <- px_data_frame %>%
-          select(-any_of(paste0(kod_kolumn[index], "_kod")))
-
-        px_data_frame <- df %>%
-          right_join(px_data_frame, by = kod_kolumn[index])
-      }
+        px_data_frame <- dfkodnyckel %>%
+            right_join(px_data_frame) %>%
+            select(-valueText_org)
     }
-  }
 
-  return(px_data_frame)
+    return(px_data_frame)
 }
 
 
@@ -403,7 +385,7 @@ pxw_get_periods <- function(url_text) {
   url_text <- pxw_create_api_url(url_text = url_text)
 
   tider <- pxw_variables_list(url_text) %>%
-    filter(code %in% c("\u00C5r", "\u00E5r", "Ar", "ar", "Tid", "tid", "M\u00E5nad", "m\u00E5nad", "Manad", "manad", "Kvartal", "kvartal", "Year", "year", "Month", "month", "Period") | isTRUE(.data$time)) %>%
+    filter(code %in% c("\u00C5r", "\u00E5r", "Ar", "ar", "Tid", "tid", "M\u00E5nad", "m\u00E5nad", "Manad", "manad", "Kvartal", "kvartal", "Year", "year", "Month", "month", "Period", "period") | isTRUE(.data$time)) %>%
     select(valueText) %>%
     distinct() %>%
     arrange(valueText) %>%
