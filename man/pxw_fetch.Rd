@@ -34,11 +34,15 @@ Retrieve data from a pxweb database
 }
 \examples{
 url_text <- pxw_create_api_url(paste0(
-  "https://www.statistikdatabasen.scb.se/",
-  "pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/"
+    "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__",
+    "BE__BE0101__BE0101A/BefolkningNy/"
 ))
+
+
 pxw_fetch(
-  url_text = url_text, filters_list = list(Region = "12", Tid = "2022"),
-  kod_kolumn = "region"
+    url_text = url_text, filters_list = list(Region = "1280", Tid = "2023",
+                                             Civilstand = "e",
+                                             Alder = "e"),
+   kod_kolumn = "region"
 )
 }

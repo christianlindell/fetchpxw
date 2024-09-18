@@ -17,21 +17,44 @@
 #'
 #' @examples
 #' url_text <- pxw_create_api_url(paste0(
-#'   "https://www.statistikdatabasen.scb.se/",
-#'   "pxweb/sv/ssd/START__AA__AA0003__AA0003B/MotFlyktLanKon/"
+#'     "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__",
+#'     "BE__BE0101__BE0101A/BefolkningNy/"
 #' ))
+#'
+#'
 #' pxw_fetch(
-#'   url_text = url_text, filters_list = list(Region = "12", Tid = "2022"),
-#'   kod_kolumn = "region"
+#'     url_text = url_text, filters_list = list(Region = "1280", Tid = "2023",
+#'                                              Civilstand = "e",
+#'                                              Alder = "e"),
+#'    kod_kolumn = "region"
 #' )
 pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = NULL, lopnr_istallet_for_koder = FALSE) {
     # Gör om url:en om den inte är en api-url
 
     url_text <- pxw_create_api_url(url_text = url_text)
 
+    if (!purrr::is_empty(filters_list)) {
+        namn_egna_parametrar <- names(filters_list)
+    }
+
 
     # Hämta en lista över alla parametrar och variabler i databasen
     dfvariabellista <- pxw_variables_list_mod(url_text)
+
+    if (!purrr::is_empty(namn_egna_parametrar)) {
+        namn_egna_parametrar <- names(filters_list)
+        namn_parametrar <- dfvariabellista %>% select(code) %>% distinct() %>%  pull()
+
+        felaktiga_params <- setdiff(namn_egna_parametrar, namn_parametrar)
+        if (!is_empty(felaktiga_params)) {
+                error_msg <- paste0("Fel!  Felaktiga parameterv\u00E4rden angivna i filters_list ",  ". \n", "Parametrarna ", paste(felaktiga_params, collapse = " "), " finns inte!")
+                stop(error_msg)
+        }
+
+
+    }
+
+
 
     # Hämta metadata om tabellens struktur och variabler från dataleverantören
     pxvariabels <- pxweb_get(url_text)$variables
