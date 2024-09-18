@@ -25,5 +25,5 @@ link <- paste0("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/",
 "Tillv\%C3\%A4xtanalys\%20statistikdatabas/Tillv\%C3\%A4xtanalys",
 "\%20statistikdatabas__Konkurser\%20och\%20offentliga\%20ackord/",
 "konk_ar_lan_bransch_2009.px/")
-pxw_variables_list_mod()
+pxw_variables_list_mod(link)
 }
