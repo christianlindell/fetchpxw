@@ -73,23 +73,7 @@ Som synes har vissa variabler elimination = TRUE. Det innebär att variabeln kan
 
 När vi hämtar hem tabellen är alla värden i klartext, men ibland vill man även ha koder. Om man till exempel laddar hem antal invånare i alla Sveriges kommuner vill man inte bara har kommunnamnen utan ofta även en kolumn med kommunkoder. Detta får man genom att ange variabeln kod_kolumn lika med "region" (det går att skicka in en vektor med flera olika variabler som man vill ha koder till.
 
-## Att anropa felkonfigurerade databaser (Tillväxtanalys och Jordbruksverket)
 
-Tyvärr är det inte alla pxwebdatabaser som följer SCB:s standard. Tillväxtanalys och Jordbruksverket sparar variabelnamnen i *valueText* och *values* innehåller istället löpnummer. Det innebär att databasen till exempel inte kan ta en kommunkod som värde utan man måste veta vilket löpnummer som myndigheten tilldelat kommunen. Samma sak med tidpunkter - det går inte skicka in "2024Q1" till api:et, utan man måste veta att Tillväxtanalys tilldelat "2024Q1" löpnumret "0".
-
-![](variabellista_TA.PNG){width="542"}
-
-Som synes är databasstrukturen ganska egendomlig. *code* och *text* innehåller till exempel samma värden. Kvartalen är sparade i *valueText* och anropas istället via ett löpnummer i *values*. Även i andra detaljer är databasen konstig. Värden i *code* kan till exempel innehålla å, ä och ö, vilket kan ställa till problem med teckenkodningen, värdet i kolumnen *time* (som inte fått plats i tabellen ovan) borde varit satt till TRUE för kvartalsvärdena för att kunna filtrera ut vilken variabel som innehåller tidsangivelse, men den är genomgående satt till FALSE. När kommuner finns med redovisas inte kommunkoden i *values*, utan både kommunkod och kommunnamn redovisas i samma textsträng i *valueText*, medan *values* innehåller ett löpnummer. Malmö heter alltså "1280 Malmö".
-
-*Så kan vi inte ha det!* Vi måste kunna anropa pxweb med kommunnummer och årtal och inte behöva ange löpnummer istället.
-
-pxw_fetch är skrivit för att kunna använda koder och inte löpnummer i anropen, vilket innebär att vi hämtar variabelnamen från *code*, medan de olika värden de kan anta hämtas från *valueText*. Kommuner och län har fått en handpåläggning så att man inte behöver skriva "1280 Malmö" utan att det räcker med att ange kommunkod eller länskod.
-
-Ett anrop till Tillväxtanalys pxweb-databas kan se ut så här:
-
-![](clipboard-3231592248.png)
-
-Namnen på variablerna kommer från *code*, medan värdena de kan anta kommer från *valueText*. Samma sak gäller för Jordbruksverket.
 
 ## Hjälpfunktioner för tid och regionkoder
 
