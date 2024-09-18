@@ -33,15 +33,15 @@ pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = N
 
     url_text <- pxw_create_api_url(url_text = url_text)
 
-    if (!purrr::is_empty(filters_list)) {
-        namn_egna_parametrar <- names(filters_list)
-    }
+    # if (!purrr::is_empty(filters_list)) {
+    #     namn_egna_parametrar <- names(filters_list)
+    # }
 
 
     # Hämta en lista över alla parametrar och variabler i databasen
     dfvariabellista <- pxw_variables_list_mod(url_text)
 
-    if (!purrr::is_empty(namn_egna_parametrar)) {
+    if (!purrr::is_empty(filters_list)) {
         namn_egna_parametrar <- names(filters_list)
         namn_parametrar <- dfvariabellista %>% select(code) %>% distinct() %>%  pull()
 
