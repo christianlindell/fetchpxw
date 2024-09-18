@@ -1,8 +1,8 @@
 ---
-title: "anvanda-pxw-fetch"
+title: "Hämta data från pxwebdatabaser med fetchpxw"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{anvanda-pxw-fetch}
+  %\VignetteIndexEntry{Hämta data från pxwebdatabaser med fetchpxw}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -61,7 +61,7 @@ Men hur vet vi vilka parametrar och variabler tabellen innehåller? För att ta 
 
 ![](parameterlista_scb.PNG){width="577"}
 
-Vill man se även vilka värden som varje variabel kan anta finns en funktion som visar både parametrar och variabler - `pxw_variables_list`:
+Vill man se även vilka värden som varje variabel kan anta finns en funktion som visar både parametrar och variabler - `pxw_variables_list_mod`:
 
 ![](variabellista_scb.PNG){width="554"}
 
