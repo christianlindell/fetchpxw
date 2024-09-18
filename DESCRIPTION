@@ -1,6 +1,6 @@
 Package: fetchpxw
 Title: Get data from pxweb databases
-Version: 0.0.11.9000
+Version: 0.0.11.9001
 Authors@R: 
     person("Christian", "Lindell", , "christian_lindell@yahoo.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
