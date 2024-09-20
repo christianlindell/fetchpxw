@@ -57,7 +57,8 @@ pxw_variables_list_mod <- function(url_str, lopnr_in_values = FALSE) {
         dfvar <- dfvar %>%
             group_by(code) %>%
             mutate(values = as.numeric((values))) %>%
-            mutate(is_lopnr = if_else(between((max(values, na.rm = TRUE) / n()), 0.85, 1.15),
+            mutate(is_lopnr = if_else(max(values, na.rm = TRUE) + 1 ==  n(),
+
                                       true = TRUE,
                                       false =  FALSE)) %>%
             ungroup() %>%
