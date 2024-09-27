@@ -2,23 +2,21 @@
 % Please edit documentation in R/pxw_variables_list_mod.R
 \name{pxw_variables_list_mod}
 \alias{pxw_variables_list_mod}
-\title{Adjust variable lists from misconfigured pxweb servers so that they are
-following SCB standard}
+\title{Adjust variable lists from misconfigured pxweb servers to follow SCB standards}
 \usage{
 pxw_variables_list_mod(url_str, lopnr_in_values = FALSE)
 }
 \arguments{
-\item{url_str}{string, URL to an pxweb API}
+\item{url_str}{A string representing the URL to a pxweb API.}
 
-\item{lopnr_in_values}{logical, TRUE if the server don't have categories in
-the value param.}
+\item{lopnr_in_values}{A logical value; set to TRUE if the server does not
+have categories in the value parameter.}
 }
 \value{
-A dataframe with all parameters and variables in use
+A dataframe containing all parameters and variables in use.
 }
 \description{
-Adjust variable lists from misconfigured pxweb servers so that they are
-following SCB standard
+Adjust variable lists from misconfigured pxweb servers to follow SCB standards
 }
 \examples{
 link <- paste0("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/",

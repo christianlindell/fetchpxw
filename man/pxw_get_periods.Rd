@@ -2,19 +2,19 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_periods}
 \alias{pxw_get_periods}
-\title{Get all available periods}
+\title{Retrieve all available periods from the table}
 \usage{
 pxw_get_periods(url_text)
 }
 \arguments{
-\item{url_text}{URL to the tables web site or API.}
+\item{url_text}{URL to the table's website or API.}
 }
 \value{
-A vector of all times available in the database, for example all
-years for which there is data
+A vector containing all available times in the database, such as all
+years for which data is available.
 }
 \description{
-Get all available periods
+Retrieve all available periods from the table
 }
 \examples{
 url_text <- paste0(

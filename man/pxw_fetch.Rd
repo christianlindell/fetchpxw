@@ -12,22 +12,23 @@ pxw_fetch(
 )
 }
 \arguments{
-\item{url_text}{Url to a pxweb table. If the table belongs to Statistics
-Sweden, the Institute of Economic Research. Jordbruksverket or Tillväxtanalys
-the url will be coverted to an api url.}
+\item{url_text}{URL to a pxweb table. If the table belongs to Statistics
+Sweden, the Institute of Economic Research, the Swedish Board of Agriculture,
+or Growth Analysis, the URL will be converted to an API URL.}
 
-\item{filters_list}{A list of which selections should be made from various
-parameters. If no selection is made, all variables are retrieved. If a variable
-is to be removed, it is specified with variable name = "e", for example Region = "e".}
+\item{filters_list}{A list specifying the selections to be made from various
+parameters. If no selection is made, all variables are retrieved. To exclude
+a variable, specify it with variable name = "e", for example, Region = "e".}
 
-\item{kod_kolumn}{A vector with names of the columns you also want codes for.}
+\item{kod_kolumn}{A vector with the names of the columns for which you also
+want codes.}
 
-\item{lopnr_istallet_for_koder}{Some pxweb databases are misconfigured so that
-they don't have codes as identifiers, but insted uses serial numbers.
-Set to TRUE if these are not identified correctly}
+\item{lopnr_istallet_for_koder}{Some pxweb databases are misconfigured and do
+not use codes as identifiers, but instead use serial numbers. Set to TRUE if
+these are not identified correctly.}
 }
 \value{
-A tibble with the contents of the pxweb table
+A tibble with the contents of the pxweb table.
 }
 \description{
 Retrieve data from a pxweb database

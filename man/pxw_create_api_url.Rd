@@ -2,18 +2,18 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_create_api_url}
 \alias{pxw_create_api_url}
-\title{Convert a link to a database tables home page to an api url}
+\title{Convert a link to a database table's home page to an API URL}
 \usage{
 pxw_create_api_url(url_text)
 }
 \arguments{
-\item{url_text}{An URL to a tables as a character string.}
+\item{url_text}{A URL to a table as a character string.}
 }
 \value{
-A URL to a API
+A URL to an API.
 }
 \description{
-Convert a link to a database tables home page to an api url
+Convert a link to a database table's home page to an API URL
 }
 \examples{
 url_text <- paste0(

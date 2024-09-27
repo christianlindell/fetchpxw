@@ -2,18 +2,18 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_first_period}
 \alias{pxw_get_first_period}
-\title{Get the first time in the table (year, month, etc.)}
+\title{Retrieve the earliest time entry in the table (year, month, etc.)}
 \usage{
 pxw_get_first_period(url_text)
 }
 \arguments{
-\item{url_text}{URL to the tables web site or API.}
+\item{url_text}{URL to the table's website or API.}
 }
 \value{
-A text string with the earliest time found in the table
+A text string representing the earliest time entry found in the table.
 }
 \description{
-Get the first time in the table (year, month, etc.)
+Retrieve the earliest time entry in the table (year, month, etc.)
 }
 \examples{
 url_text <- paste0(

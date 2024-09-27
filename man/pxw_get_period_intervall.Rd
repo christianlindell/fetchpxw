@@ -7,14 +7,11 @@
 pxw_get_period_intervall(url_text, from_per = NULL, to_per = NULL)
 }
 \arguments{
-\item{url_text}{URL to the tables web site or API.}
+\item{url_text}{URL to the table's website or API.}
 
-\item{from_per}{Enter the earliest time in the range}
+\item{from_per}{The earliest time in the range.}
 
-\item{to_per}{Enter the latest time in the range.}
-}
-\value{
-A vector with all the times between from_per and to_per.
+\item{to_per}{The latest time in the range.}
 }
 \description{
 Create a period range for the times in the table
@@ -22,7 +19,6 @@ Create a period range for the times in the table
 \examples{
 url_text <- paste0(
   "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-  "START__AM__AM0210__AM0210A/ArbStatusM/"
-)
+  "START__AM__AM0210__AM0210A/ArbStatusM/")
 pxw_get_period_intervall(url_text, from_per = "2024M01", to_per = "2024M03")
 }

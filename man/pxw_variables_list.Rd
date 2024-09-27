@@ -2,18 +2,18 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_variables_list}
 \alias{pxw_variables_list}
-\title{Get a tibble with all parameters and variables in the table}
+\title{Retrieve a tibble with all parameters and variables from the table}
 \usage{
 pxw_variables_list(url_text)
 }
 \arguments{
-\item{url_text}{URL to the tables web site or API.}
+\item{url_text}{URL to the table's website or API.}
 }
 \value{
-A tibble with all parameters and variables that can be used in the query
+A tibble containing all parameters and variables available for querying.
 }
 \description{
-Get a tibble with all parameters and variables in the table
+Retrieve a tibble with all parameters and variables from the table
 }
 \examples{
 url_text <- paste0(

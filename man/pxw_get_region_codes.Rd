@@ -2,27 +2,25 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_get_region_codes}
 \alias{pxw_get_region_codes}
-\title{If the table has a geographical variable, codes for this are retrieved, for
-example municipality codes}
+\title{Retrieve geographical variable codes from a pxweb table}
 \usage{
 pxw_get_region_codes(url_text, niva_nchar = NULL, lan_kod = NULL)
 }
 \arguments{
-\item{url_text}{UURL to the tables web site or API.}
+\item{url_text}{URL to the table's website or API.}
 
-\item{niva_nchar}{If the table contains mixed geographic levels, it can
-specify that only codes with a certain length should be retrieved.
-level_nchar = 2 fetches for example county codes only.}
+\item{niva_nchar}{If the table contains mixed geographic levels, specify the
+length of the codes to be retrieved.
+For example, setting niva_nchar = 2 retrieves only county codes.}
 
-\item{lan_kod}{Vector of county codes. If lan_kod = c("10", "12") then
-codes are retrieved only for Blekinge and Skåne.}
+\item{lan_kod}{A vector of county codes. For example, lan_kod = c("10", "12")
+retrieves codes only for Blekinge and Skåne.}
 }
 \value{
-A vector with municipality codes or similar
+A vector with municipality codes or similar.
 }
 \description{
-If the table has a geographical variable, codes for this are retrieved, for
-example municipality codes
+Retrieve geographical variable codes from a pxweb table
 }
 \examples{
 url_text <- paste0(
