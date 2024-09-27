@@ -1,17 +1,18 @@
 #' Retrieve data from a pxweb database
 #'
-#' @param url_text Url to a pxweb table. If the table belongs to Statistics
-#' Sweden, the Institute of Economic Research. Jordbruksverket or Tillväxtanalys
-#'  the url will be coverted to an api url.
-#' @param filters_list A list of which selections should be made from various
-#' parameters. If no selection is made, all variables are retrieved. If a variable
-#'  is to be removed, it is specified with variable name = "e", for example Region = "e".
-#' @param kod_kolumn A vector with names of the columns you also want codes for.
-#' @param lopnr_istallet_for_koder Some pxweb databases are misconfigured so that
-#' they don't have codes as identifiers, but insted uses serial numbers.
-#' Set to TRUE if these are not identified correctly
+#' @param url_text URL to a pxweb table. If the table belongs to Statistics
+#' Sweden, the Institute of Economic Research, the Swedish Board of Agriculture,
+#' or Growth Analysis, the URL will be converted to an API URL.
+#' @param filters_list A list specifying the selections to be made from various
+#' parameters. If no selection is made, all variables are retrieved. To exclude
+#'  a variable, specify it with variable name = "e", for example, Region = "e".
+#' @param kod_kolumn A vector with the names of the columns for which you also
+#' want codes.
+#' @param lopnr_istallet_for_koder Some pxweb databases are misconfigured and do
+#' not use codes as identifiers, but instead use serial numbers. Set to TRUE if
+#' these are not identified correctly.
 #'
-#' @return A tibble with the contents of the pxweb table
+#' @return A tibble with the contents of the pxweb table.
 #'
 #' @export
 #'
@@ -194,18 +195,16 @@ pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = N
 
 
 # ------------ - Hämta regionkoder
-#' If the table has a geographical variable, codes for this are retrieved, for
-#' example municipality codes
+#' Retrieve geographical variable codes from a pxweb table
 #'
+#' @param url_text URL to the table's website or API.
+#' @param niva_nchar If the table contains mixed geographic levels, specify the
+#' length of the codes to be retrieved.
+#' For example, setting niva_nchar = 2 retrieves only county codes.
+#' @param lan_kod A vector of county codes. For example, lan_kod = c("10", "12")
+#' retrieves codes only for Blekinge and Skåne.
 #'
-#' @param url_text UURL to the tables web site or API.
-#' @param niva_nchar If the table contains mixed geographic levels, it can
-#' specify that only codes with a certain length should be retrieved.
-#' level_nchar = 2 fetches for example county codes only.
-#' @param lan_kod Vector of county codes. If lan_kod = c("10", "12") then
-#' codes are retrieved only for Blekinge and Skåne.
-#'
-#' @return A vector with municipality codes or similar
+#' @return A vector with municipality codes or similar.
 #'
 #' @export
 #'
@@ -260,11 +259,11 @@ pxw_get_region_codes <- function(url_text, niva_nchar = NULL, lan_kod = NULL) {
 
 
 # --------- Hämta lista över alla parametrar och variabler
-#' Get a tibble with all parameters and variables in the table
+#' Retrieve a tibble with all parameters and variables from the table
 #'
-#' @param url_text URL to the tables web site or API.
+#' @param url_text URL to the table's website or API.
 #'
-#' @return A tibble with all parameters and variables that can be used in the query
+#' @return A tibble containing all parameters and variables available for querying.
 #' @export
 #'
 #' @examples
@@ -300,11 +299,11 @@ pxw_variables_list <- function(url_text) {
 
 
 # ------- Hämta lista över parametrar och om de kan elimineras eller inte
-#' Get a tibble with all parameters in the table
+#' Retrieve a tibble with all parameters from the table
 #'
-#' @param url_text URL to the tables web site or API.
+#' @param url_text URL to the table's website or API.
 #'
-#' @return A tibble with all parameters
+#' @return A tibble containing all parameters available in the table.
 #' @export
 #'
 #' @examples
@@ -322,11 +321,11 @@ pxw_parameters_list <- function(url_text) {
 }
 
 # -------- Hämta senaste tidpunkt
-#' Get the latest time in the table (year, month, etc.)
+#' Retrieve the latest time entry in the table (year, month, etc.)
 #'
-#' @param url_text URL to the tables web site or API.
+#' @param url_text URL to the table's website or API.
 #'
-#' @return A text string with the last time found in the table
+#' @return A text string representing the latest time entry found in the table.
 #' @export
 #'
 #' @examples
@@ -341,11 +340,11 @@ pxw_get_last_period <- function(url_text) {
   return(max(pxw_get_periods(url_text = url_text)))
 }
 
-#' Get the first time in the table (year, month, etc.)
+#' Retrieve the earliest time entry in the table (year, month, etc.)
 #'
-#' @param url_text URL to the tables web site or API.
+#' @param url_text URL to the table's website or API.
 #'
-#' @return A text string with the earliest time found in the table
+#' @return A text string representing the earliest time entry found in the table.
 #' @export
 #'
 #' @examples
@@ -364,18 +363,15 @@ pxw_get_first_period <- function(url_text) {
 # ---------- Skapa periodintervall
 #' Create a period range for the times in the table
 #'
-#' @param url_text URL to the tables web site or API.
-#' @param from_per Enter the earliest time in the range
-#' @param to_per Enter the latest time in the range.
-#'
-#' @return A vector with all the times between from_per and to_per.
+#' @param url_text URL to the table's website or API.
+#' @param from_per The earliest time in the range.
+#' @param to_per The latest time in the range.
 #' @export
 #'
 #' @examples
 #' url_text <- paste0(
 #'   "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-#'   "START__AM__AM0210__AM0210A/ArbStatusM/"
-#' )
+#'   "START__AM__AM0210__AM0210A/ArbStatusM/")
 #' pxw_get_period_intervall(url_text, from_per = "2024M01", to_per = "2024M03")
 pxw_get_period_intervall <- function(url_text, from_per = NULL, to_per = NULL) {
   url_text <- pxw_create_api_url(url_text = url_text)
@@ -390,12 +386,12 @@ pxw_get_period_intervall <- function(url_text, from_per = NULL, to_per = NULL) {
 
 # ------------- Hämta alla tillgängliga perioder
 
-#' Get all available periods
+#' Retrieve all available periods from the table
 #'
-#' @param url_text URL to the tables web site or API.
+#' @param url_text URL to the table's website or API.
 #'
-#' @return A vector of all times available in the database, for example all
-#' years for which there is data
+#' @return A vector containing all available times in the database, such as all
+#' years for which data is available.
 #' @export
 #'
 #' @examples
@@ -421,12 +417,11 @@ pxw_get_periods <- function(url_text) {
   }
 }
 
-# Convert a link to a database tables home page to an api url
-#' Convert a link to a database tables home page to an api url
+#' Convert a link to a database table's home page to an API URL
 #'
-#' @param url_text An URL to a tables as a character string.
+#' @param url_text A URL to a table as a character string.
 #'
-#' @return A URL to a API
+#' @return A URL to an API.
 #' @export
 #'
 #' @examples

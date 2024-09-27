@@ -1,11 +1,10 @@
-#' Adjust variable lists from misconfigured pxweb servers so that they are
-#' following SCB standard
+#' Adjust variable lists from misconfigured pxweb servers to follow SCB standards
 #'
-#' @param url_str string, URL to an pxweb API
-#' @param lopnr_in_values logical, TRUE if the server don't have categories in
-#' the value param.
+#' @param url_str A string representing the URL to a pxweb API.
+#' @param lopnr_in_values A logical value; set to TRUE if the server does not
+#' have categories in the value parameter.
 #'
-#' @return A dataframe with all parameters and variables in use
+#' @return A dataframe containing all parameters and variables in use.
 #' @export
 #'
 #' @examples
@@ -16,12 +15,15 @@
 #' pxw_variables_list_mod(link)
 pxw_variables_list_mod <- function(url_str, lopnr_in_values = FALSE) {
 
+
+    # Definiera tidsrelaterade sökord
     tider <- c("\u00C5r","\u00E5r", "Ar", "ar",  "Tid","tid",  "M\u00C5nad",
                "m\u00E5nad", "Manad", "manad", "Kvartal","kvartal", "year",
                "Month", "month", "Period", "period", "Time", "time")
 
+    # Kontrollera om sajten har korrekt konfigurerade databaser och avnvänder
+    # koder i values eller ej
     korrekt_konfig_sajter <- paste(c("scb", "folkhalsomyndigheten", "konj.se"), collapse = "|")
-
     felkonfig_sajter <- paste(c("tillvaxtanalys", "sjv.se"), collapse = "|")
 
     # Funktion för att om första ordet kan vara en kod och antal ord
@@ -36,7 +38,7 @@ pxw_variables_list_mod <- function(url_str, lopnr_in_values = FALSE) {
         first_word <- words[1]
         return(str_detect(first_word, "^[0-9a-zA-Z\u00e5\u00e4\u00f6\u00c5\u00c4\u00d6\\-\\+_/]+$") && str_detect(first_word, "[0-9]"))
     }
-
+    # Hämta variabellista med orginalvärden
     dfvar <- pxw_variables_list(url_str) %>%
         mutate(values_org = values,
                valueText_org = valueText)
@@ -44,15 +46,11 @@ pxw_variables_list_mod <- function(url_str, lopnr_in_values = FALSE) {
 
 
 
-    #  Om servern är rätt konfigurerad
+    #  Kontrollera om servern är rätt konfigurerad
     if (str_detect(url_str, korrekt_konfig_sajter)) {
         dfvar <- dfvar %>%
             mutate(is_lopnr = FALSE)
         return(dfvar)
-
-
-        # Om servern är felkonfigurerad och använder löpnr i values
-        # } else if (str_detect(url_str, felkonfig_sajter) | isTRUE(lopnr_in_values)){
     } else {
         dfvar <- dfvar %>%
             group_by(code) %>%
