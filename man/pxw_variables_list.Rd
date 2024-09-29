@@ -2,23 +2,26 @@
 % Please edit documentation in R/pxw_fetch.R
 \name{pxw_variables_list}
 \alias{pxw_variables_list}
-\title{Retrieve a tibble with all parameters and variables from the table}
+\title{Adjust variable lists from misconfigured pxweb servers to follow SCB standards}
 \usage{
-pxw_variables_list(url_text)
+pxw_variables_list(url_str, lopnr_in_values = FALSE)
 }
 \arguments{
-\item{url_text}{URL to the table's website or API.}
+\item{url_str}{A string representing the URL to a pxweb API.}
+
+\item{lopnr_in_values}{A logical value; set to TRUE if the server does not
+have categories in the value parameter.}
 }
 \value{
-A tibble containing all parameters and variables available for querying.
+A dataframe containing all parameters and variables in use.
 }
 \description{
-Retrieve a tibble with all parameters and variables from the table
+Adjust variable lists from misconfigured pxweb servers to follow SCB standards
 }
 \examples{
-url_text <- paste0(
-  "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
-  "START__AM__AM0210__AM0210A/ArbStatusM/"
-)
-pxw_variables_list(url_text)
+link <- paste0("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/",
+"Tillv\%C3\%A4xtanalys\%20statistikdatabas/Tillv\%C3\%A4xtanalys",
+"\%20statistikdatabas__Konkurser\%20och\%20offentliga\%20ackord/",
+"konk_ar_lan_bransch_2009.px/")
+pxw_variables_list(link)
 }
