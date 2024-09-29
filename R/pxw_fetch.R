@@ -40,7 +40,7 @@ pxw_fetch <- function(url_text = url_text, filters_list = list(), kod_kolumn = N
 
 
     # Hämta en lista över alla parametrar och variabler i databasen
-    dfvariabellista <- pxw_variables_list_mod(url_text)
+    dfvariabellista <- pxw_variables_list(url_text)
 
     if (!purrr::is_empty(filters_list)) {
         namn_egna_parametrar <- names(filters_list)
@@ -218,7 +218,7 @@ pxw_get_region_codes <- function(url_text, niva_nchar = NULL, lan_kod = NULL) {
   url_text <- pxw_create_api_url(url_text = url_text)
 
   if (str_detect(url_text, "statistik.tillvaxtanalys.se|statistik.sjv.se/")) {
-    dfregionkod <- pxw_variables_list(url_text) %>%
+    dfregionkod <- pxw_variables_list_org(url_text) %>%
       filter(code %in% c(
         "Kommun", "kommun", "L\u00E4n", "l\u00E4n", "Riket", "riket",
         "Region", "region", "Land", "land", "Country", "country", "reporting country"
@@ -229,7 +229,7 @@ pxw_get_region_codes <- function(url_text, niva_nchar = NULL, lan_kod = NULL) {
       ) %>%
       select(reg_koder = region_kod)
   } else {
-    dfregionkod <- pxw_variables_list(url_text) %>%
+    dfregionkod <- pxw_variables_list_org(url_text) %>%
       filter(code %in% c(
         "Kommun", "kommun", "L\u00E4n", "l\u00E4n", "Riket", "riket",
         "Region", "region", "Land", "land", "Country", "country", "reporting country"
@@ -271,8 +271,8 @@ pxw_get_region_codes <- function(url_text, niva_nchar = NULL, lan_kod = NULL) {
 #'   "https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/",
 #'   "START__AM__AM0210__AM0210A/ArbStatusM/"
 #' )
-#' pxw_variables_list(url_text)
-pxw_variables_list <- function(url_text) {
+#' pxw_variables_list_org(url_text)
+pxw_variables_list_org <- function(url_text) {
   url_text <- pxw_create_api_url(url_text = url_text)
 
   px_levels <- pxweb_get(url_text)
@@ -315,7 +315,7 @@ pxw_variables_list <- function(url_text) {
 pxw_parameters_list <- function(url_text) {
   url_text <- pxw_create_api_url(url_text = url_text)
 
-  pxw_variables_list(url_text) %>%
+  pxw_variables_list_org(url_text) %>%
     select(code, text, elimination) %>%
     distinct()
 }
@@ -403,7 +403,7 @@ pxw_get_period_intervall <- function(url_text, from_per = NULL, to_per = NULL) {
 pxw_get_periods <- function(url_text) {
   url_text <- pxw_create_api_url(url_text = url_text)
 
-  tider <- pxw_variables_list(url_text) %>%
+  tider <- pxw_variables_list_org(url_text) %>%
     filter(code %in% c("\u00C5r", "\u00E5r", "Ar", "ar", "Tid", "tid", "M\u00E5nad", "m\u00E5nad", "Manad", "manad", "Kvartal", "kvartal", "Year", "year", "Month", "month", "Period", "period") | isTRUE(.data$time)) %>%
     select(valueText) %>%
     distinct() %>%
@@ -542,3 +542,93 @@ pxw_param_till_lopnr <- function(url_text, dfvariabellista, filters_list) {
 
   return(filters_list)
 }
+
+
+#' Adjust variable lists from misconfigured pxweb servers to follow SCB standards
+#'
+#' @param url_str A string representing the URL to a pxweb API.
+#' @param lopnr_in_values A logical value; set to TRUE if the server does not
+#' have categories in the value parameter.
+#'
+#' @return A dataframe containing all parameters and variables in use.
+#' @export
+#'
+#' @examples
+#' link <- paste0("https://statistik.tillvaxtanalys.se/PxWeb/pxweb/sv/",
+#' "Tillv%C3%A4xtanalys%20statistikdatabas/Tillv%C3%A4xtanalys",
+#' "%20statistikdatabas__Konkurser%20och%20offentliga%20ackord/",
+#' "konk_ar_lan_bransch_2009.px/")
+#' pxw_variables_list(link)
+pxw_variables_list <- function(url_str, lopnr_in_values = FALSE) {
+
+
+    # Definiera tidsrelaterade sökord
+    tider <- c("\u00C5r","\u00E5r", "Ar", "ar",  "Tid","tid",  "M\u00C5nad",
+               "m\u00E5nad", "Manad", "manad", "Kvartal","kvartal", "year",
+               "Month", "month", "Period", "period", "Time", "time")
+
+    # Kontrollera om sajten har korrekt konfigurerade databaser och avnvänder
+    # koder i values eller ej
+    korrekt_konfig_sajter <- paste(c("scb", "folkhalsomyndigheten", "konj.se"), collapse = "|")
+    felkonfig_sajter <- paste(c("tillvaxtanalys", "sjv.se"), collapse = "|")
+
+    # Funktion för att om första ordet kan vara en kod och antal ord
+    # En kod definieras av att den inte enbart består av bokstäver utan av enbart
+    # siffror, en blandning av siffror och bokstäver. Den får även innehålla ".+-_/".
+    # För att första ordet ska kunna vara en kod måste den följas av minst ett ord till
+    check_first_word <- function(text) {
+        words <- str_split(text, "\\s+")[[1]]
+        if (length(words) < 2) {
+            return(FALSE)
+        }
+        first_word <- words[1]
+        return(str_detect(first_word, "^[0-9a-zA-Z\u00e5\u00e4\u00f6\u00c5\u00c4\u00d6\\-\\+_/]+$") && str_detect(first_word, "[0-9]"))
+    }
+    # Hämta variabellista med orginalvärden
+    dfvar <- pxw_variables_list_org(url_str) %>%
+        mutate(values_org = values,
+               valueText_org = valueText)
+
+
+
+
+    #  Kontrollera om servern är rätt konfigurerad
+    if (str_detect(url_str, korrekt_konfig_sajter)) {
+        dfvar <- dfvar %>%
+            mutate(is_lopnr = FALSE)
+        return(dfvar)
+    } else {
+        dfvar <- dfvar %>%
+            group_by(code) %>%
+            mutate(values = as.numeric((values))) %>%
+            mutate(is_lopnr = if_else(max(values, na.rm = TRUE) + 1 ==  n(),
+
+                                      true = TRUE,
+                                      false =  FALSE)) %>%
+            ungroup() %>%
+            group_by(code) %>%
+            mutate(values = as.numeric((values))) %>%
+            mutate(ar_kod = sapply(valueText, check_first_word)) %>%
+            ungroup() %>%
+            mutate(values = if_else(ar_kod,
+                                    str_extract(valueText, "(?<!\\S)-?\\b(?=\\w*[0-9])[-\\w.+]*\\b-?"),
+                                    valueText),
+                   valueText = str_remove(valueText, "(?<!\\S)-?\\b(?=\\w*[0-9])[-\\w.+]*\\b-?")) %>%
+            select(-ar_kod) %>%
+            mutate(valueText = str_trim(valueText))
+    }
+
+    # Om värdena i valuText inte är unika efter att den inledande koddelen raderats så
+    # ersätt dem med orginalvärdena som finns sparade i kolumnen valueText_org
+    dfvar <- dfvar %>%
+        group_by(code) %>%
+        mutate(valueText = case_when(
+            n_distinct(valueText) == n() ~ valueText,
+            TRUE ~ valueText_org
+        )) %>%
+        ungroup() %>%
+        mutate(valueText = str_trim(valueText))
+
+    return(dfvar)
+}
+
